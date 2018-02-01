@@ -19,5 +19,11 @@
               "content_script.js"
           ]
       }
+  ],
+  "background": {
+      "scripts": ["background.js"]
+  },
+  "permissions": [
+      "storage"
   ]
 }

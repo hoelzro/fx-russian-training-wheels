@@ -12,16 +12,10 @@ function stem(word) {
     return stemmer.getCurrent();
 }
 
-// XXX implement me
 function getKnownWord(stem) {
-    if(stem == 'баг') {
-        return Promise.resolve({ word: 'баг' });
-    } else if(stem == 'фанат') {
-        return Promise.resolve({ word: 'фанат' });
-    } else if(stem == 'сосед') {
-        return Promise.resolve({ word: 'сосед' });
-    }
-    return Promise.resolve(null);
+    return browser.runtime.sendMessage({method: 'getVocab'}).then(function(result) {
+        return result[stem];
+    });
 }
 
 function onSelectionSettled() {
