@@ -15,12 +15,13 @@ function stem(word) {
 // XXX implement me
 function getKnownWord(stem) {
     if(stem == 'баг') {
-        return { word: 'баг' };
+        return Promise.resolve({ word: 'баг' });
     } else if(stem == 'фанат') {
-        return { word: 'фанат' };
+        return Promise.resolve({ word: 'фанат' });
     } else if(stem == 'сосед') {
-        return { word: 'сосед' };
+        return Promise.resolve({ word: 'сосед' });
     }
+    return Promise.resolve(null);
 }
 
 function onSelectionSettled() {
@@ -39,28 +40,29 @@ function onSelectionSettled() {
         return;
     }
     let stemmed = stem(selection);
-    let knownWord = getKnownWord(stemmed);
-    if(knownWord != null) {
-        let obj = {
-            attributes: {
-                title: 'Ты знаешь это слово - ' + knownWord.word
-            },
-            getBoundingClientRect: function() {
-                return {
-                    top: 5 + currentY,
-                    left: 5 + currentX,
-                    right: 5 + currentX,
-                    bottom: 5 + currentY,
-                    width: 1,
-                    height: 1
-                };
-            },
-            clientWidth: 50,
-            clientHeight: 50
-        };
-        tippy(obj);
-        obj._tippy.show();
-    }
+    getKnownWord(stemmed).then(function(knownWord) {
+        if(knownWord != null) {
+            let obj = {
+                attributes: {
+                    title: 'Ты знаешь это слово - ' + knownWord.word
+                },
+                getBoundingClientRect: function() {
+                    return {
+                        top: 5 + currentY,
+                        left: 5 + currentX,
+                        right: 5 + currentX,
+                        bottom: 5 + currentY,
+                        width: 1,
+                        height: 1
+                    };
+                },
+                clientWidth: 50,
+                clientHeight: 50
+            };
+            tippy(obj);
+            obj._tippy.show();
+        }
+    });
 }
 
 function trackMouseMoves(event) {
